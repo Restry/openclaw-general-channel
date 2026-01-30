@@ -94,7 +94,12 @@ export async function handleGenericMessage(params: {
 
     // Handle media messages - include media URL in the message body for agent context
     if (ctx.mediaUrl && (ctx.contentType === "image" || ctx.contentType === "voice" || ctx.contentType === "audio")) {
-      const mediaLabel = ctx.contentType === "image" ? "🖼️ Image" : "🔊 Audio";
+      let mediaLabel = "🔊 Audio";
+      if (ctx.contentType === "image") {
+        mediaLabel = "🖼️ Image";
+      } else if (ctx.contentType === "voice") {
+        mediaLabel = "🎤 Voice";
+      }
       messageBody = `${speaker}: [${mediaLabel}] ${ctx.content || "(no caption)"}\nMedia URL: ${ctx.mediaUrl}`;
     }
 

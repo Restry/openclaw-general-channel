@@ -12,11 +12,13 @@ export const genericOutbound: ChannelOutboundAdapter = {
     return { channel: "generic-channel", ...result };
   },
   sendMedia: async ({ cfg, to, text, mediaUrl, mediaType }) => {
-    // Determine content type from mediaType
+    // Determine content type from mediaType - preserve voice vs audio distinction
     let contentType: "image" | "voice" | "audio" | undefined;
     if (mediaType === "image") {
       contentType = "image";
-    } else if (mediaType === "audio" || mediaType === "voice") {
+    } else if (mediaType === "voice") {
+      contentType = "voice";
+    } else if (mediaType === "audio") {
       contentType = "audio";
     }
 

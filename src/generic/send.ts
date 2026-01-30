@@ -7,7 +7,7 @@ export type SendGenericMessageParams = {
   to: string;
   text: string;
   replyToMessageId?: string;
-  contentType?: "text" | "markdown" | "image" | "voice" | "audio" | "thinking";
+  contentType?: "text" | "markdown" | "image" | "voice" | "audio";
   mediaUrl?: string;
   mimeType?: string;
 };

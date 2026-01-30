@@ -33,7 +33,7 @@ export type OutboundMessage = {
   messageId: string;
   chatId: string;
   content: string;
-  contentType: "text" | "markdown" | "image" | "voice" | "audio" | "thinking";
+  contentType: "text" | "markdown" | "image" | "voice" | "audio";
   // Media URL for image/voice/audio messages
   mediaUrl?: string;
   // MIME type for media content

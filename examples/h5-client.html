@@ -392,9 +392,9 @@
     </div>
 
     <!-- Image modal for viewing full-size images -->
-    <div class="modal hidden" id="imageModal" onclick="closeImageModal()">
+    <div class="modal hidden" id="imageModal" onclick="handleModalClick(event)">
         <span class="modal-close">&times;</span>
-        <img id="modalImage" src="" alt="Full size image">
+        <img id="modalImage" src="" alt="Full size image" onclick="event.stopPropagation()">
     </div>
 
     <script>
@@ -454,6 +454,10 @@
             document.getElementById('sendBtn').disabled = true;
             document.getElementById('imageBtn').disabled = true;
             document.getElementById('voiceBtn').disabled = true;
+            // Stop recording if active when disconnecting
+            if (isRecording) {
+                stopRecording();
+            }
         }
 
         function updateStatus(status) {
@@ -461,6 +465,9 @@
             if (status === 'connected') {
                 statusEl.textContent = '🟢 Connected';
                 statusEl.className = 'connection-status connected';
+            } else if (status === 'error') {
+                statusEl.textContent = '⚠️ Error';
+                statusEl.className = 'connection-status disconnected';
             } else {
                 statusEl.textContent = '🔴 Disconnected';
                 statusEl.className = 'connection-status disconnected';
@@ -811,6 +818,14 @@
             const modalImg = document.getElementById('modalImage');
             modalImg.src = src;
             modal.classList.remove('hidden');
+        }
+
+        function handleModalClick(event) {
+            // Only close if clicking on the modal background, not the image
+            if (event.target === document.getElementById('imageModal') || 
+                event.target.classList.contains('modal-close')) {
+                closeImageModal();
+            }
         }
 
         function closeImageModal() {

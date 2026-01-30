@@ -111,7 +111,7 @@ openclaw config set channels.generic.wsPort 8080
   messageId: string;      // Unique message ID
   chatId: string;         // Chat/conversation ID
   content: string;        // Message content
-  contentType: "text" | "markdown" | "image" | "voice" | "audio" | "thinking";
+  contentType: "text" | "markdown" | "image" | "voice" | "audio";
   mediaUrl?: string;      // Media URL (for image/voice/audio)
   mimeType?: string;      // MIME type of media
   replyTo?: string;       // Optional message ID being replied to
