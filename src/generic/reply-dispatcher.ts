@@ -2,7 +2,7 @@ import {
   createReplyPrefixContext,
   createTypingCallbacks,
   logTypingFailure,
-  type ClawdbotConfig,
+  type OpenClawConfig,
   type RuntimeEnv,
   type ReplyPayload,
 } from "openclaw/plugin-sdk";
@@ -11,7 +11,7 @@ import { sendMessageGeneric } from "./send.js";
 import type { GenericChannelConfig } from "./types.js";
 
 export type CreateGenericReplyDispatcherParams = {
-  cfg: ClawdbotConfig;
+  cfg: OpenClawConfig;
   agentId: string;
   runtime: RuntimeEnv;
   chatId: string;
@@ -39,7 +39,7 @@ export function createGenericReplyDispatcher(params: CreateGenericReplyDispatche
     onStartError: (err) => {
       logTypingFailure({
         log: (message) => params.runtime.log?.(message),
-        channel: "generic",
+        channel: "generic-channel",
         action: "start",
         error: err,
       });
@@ -47,7 +47,7 @@ export function createGenericReplyDispatcher(params: CreateGenericReplyDispatche
     onStopError: (err) => {
       logTypingFailure({
         log: (message) => params.runtime.log?.(message),
-        channel: "generic",
+        channel: "generic-channel",
         action: "stop",
         error: err,
       });
@@ -56,7 +56,7 @@ export function createGenericReplyDispatcher(params: CreateGenericReplyDispatche
 
   const textChunkLimit = core.channel.text.resolveTextChunkLimit({
     cfg,
-    channel: "generic",
+    channel: "generic-channel",
     defaultLimit: 4000,
   });
 

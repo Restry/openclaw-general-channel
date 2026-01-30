@@ -1,4 +1,4 @@
-import type { ChannelPlugin, ClawdbotConfig } from "openclaw/plugin-sdk";
+import type { ChannelPlugin, OpenClawConfig } from "openclaw/plugin-sdk";
 import { DEFAULT_ACCOUNT_ID, PAIRING_APPROVED_MESSAGE } from "openclaw/plugin-sdk";
 import type { ResolvedGenericAccount, GenericChannelConfig } from "./types.js";
 import { genericOutbound } from "./outbound.js";
@@ -6,19 +6,19 @@ import { probeGeneric } from "./probe.js";
 import { sendMessageGeneric } from "./send.js";
 
 const meta = {
-  id: "generic",
-  label: "Generic",
+  id: "generic-channel",
+  label: "Generic Channel",
   selectionLabel: "Generic Channel (WebSocket/Webhook)",
-  docsPath: "/channels/generic",
-  docsLabel: "generic",
+  docsPath: "/channels/generic-channel",
+  docsLabel: "generic-channel",
   blurb: "Generic channel supporting WebSocket and Webhook connections.",
   aliases: [],
   order: 100,
 } as const;
 
-function resolveGenericAccount(params: { cfg: ClawdbotConfig }): ResolvedGenericAccount {
+function resolveGenericAccount(params: { cfg: OpenClawConfig }): ResolvedGenericAccount {
   const { cfg } = params;
-  const genericCfg = cfg.channels?.generic as GenericChannelConfig | undefined;
+  const genericCfg = cfg.channels?.["generic-channel"] as GenericChannelConfig | undefined;
 
   return {
     accountId: DEFAULT_ACCOUNT_ID,
@@ -28,7 +28,7 @@ function resolveGenericAccount(params: { cfg: ClawdbotConfig }): ResolvedGeneric
 }
 
 export const genericPlugin: ChannelPlugin<ResolvedGenericAccount> = {
-  id: "generic",
+  id: "generic-channel",
   meta: {
     ...meta,
   },
@@ -57,7 +57,7 @@ export const genericPlugin: ChannelPlugin<ResolvedGenericAccount> = {
       "- Generic targeting: omit `target` to reply to the current conversation (auto-inferred). Explicit targets: `user:userId` or `chat:chatId`.",
     ],
   },
-  reload: { configPrefixes: ["channels.generic"] },
+  reload: { configPrefixes: ["channels.generic-channel"] },
   configSchema: {
     schema: {
       type: "object",
@@ -85,16 +85,16 @@ export const genericPlugin: ChannelPlugin<ResolvedGenericAccount> = {
       ...cfg,
       channels: {
         ...cfg.channels,
-        generic: {
-          ...cfg.channels?.generic,
+        "generic-channel": {
+          ...cfg.channels?.["generic-channel"],
           enabled,
         },
       },
     }),
     deleteAccount: ({ cfg }) => {
-      const next = { ...cfg } as ClawdbotConfig;
+      const next = { ...cfg } as OpenClawConfig;
       const nextChannels = { ...cfg.channels };
-      delete (nextChannels as Record<string, unknown>).generic;
+      delete (nextChannels as Record<string, unknown>)["generic-channel"];
       if (Object.keys(nextChannels).length > 0) {
         next.channels = nextChannels;
       } else {
@@ -103,7 +103,7 @@ export const genericPlugin: ChannelPlugin<ResolvedGenericAccount> = {
       return next;
     },
     isConfigured: (_account, cfg) => {
-      const genericCfg = cfg.channels?.generic as GenericChannelConfig | undefined;
+      const genericCfg = cfg.channels?.["generic-channel"] as GenericChannelConfig | undefined;
       return Boolean(genericCfg?.enabled);
     },
     describeAccount: (account) => ({
@@ -112,7 +112,7 @@ export const genericPlugin: ChannelPlugin<ResolvedGenericAccount> = {
       configured: account.configured,
     }),
     resolveAllowFrom: ({ cfg }) =>
-      (cfg.channels?.generic as GenericChannelConfig | undefined)?.allowFrom ?? [],
+      (cfg.channels?.["generic-channel"] as GenericChannelConfig | undefined)?.allowFrom ?? [],
     formatAllowFrom: ({ allowFrom }) =>
       allowFrom
         .map((entry) => String(entry).trim())
@@ -130,8 +130,8 @@ export const genericPlugin: ChannelPlugin<ResolvedGenericAccount> = {
       ...cfg,
       channels: {
         ...cfg.channels,
-        generic: {
-          ...cfg.channels?.generic,
+        "generic-channel": {
+          ...cfg.channels?.["generic-channel"],
           enabled: true,
         },
       },
@@ -179,7 +179,7 @@ export const genericPlugin: ChannelPlugin<ResolvedGenericAccount> = {
       lastProbeAt: snapshot.lastProbeAt ?? null,
     }),
     probeAccount: async ({ cfg }) =>
-      await probeGeneric(cfg.channels?.generic as GenericChannelConfig | undefined),
+      await probeGeneric(cfg.channels?.["generic-channel"] as GenericChannelConfig | undefined),
     buildAccountSnapshot: ({ account, runtime, probe }) => ({
       accountId: account.accountId,
       enabled: account.enabled,
@@ -195,7 +195,7 @@ export const genericPlugin: ChannelPlugin<ResolvedGenericAccount> = {
   gateway: {
     startAccount: async (ctx) => {
       const { monitorGenericProvider } = await import("./monitor.js");
-      const genericCfg = ctx.cfg.channels?.generic as GenericChannelConfig | undefined;
+      const genericCfg = ctx.cfg.channels?.["generic-channel"] as GenericChannelConfig | undefined;
       const port = genericCfg?.connectionMode === "websocket" 
         ? genericCfg?.wsPort ?? 8080 
         : genericCfg?.webhookPort ?? 3000;

@@ -1,9 +1,9 @@
-import type { ClawdbotConfig } from "openclaw/plugin-sdk";
+import type { OpenClawConfig } from "openclaw/plugin-sdk";
 import type { GenericChannelConfig, GenericSendResult, OutboundMessage } from "./types.js";
 import { getGenericWSManager } from "./client.js";
 
 export type SendGenericMessageParams = {
-  cfg: ClawdbotConfig;
+  cfg: OpenClawConfig;
   to: string;
   text: string;
   replyToMessageId?: string;
@@ -23,7 +23,7 @@ function normalizeTarget(to: string): { chatId: string; type: "user" | "chat" } 
 
 export async function sendMessageGeneric(params: SendGenericMessageParams): Promise<GenericSendResult> {
   const { cfg, to, text, replyToMessageId, contentType = "text" } = params;
-  const genericCfg = cfg.channels?.generic as GenericChannelConfig | undefined;
+  const genericCfg = cfg.channels?.["generic-channel"] as GenericChannelConfig | undefined;
 
   if (!genericCfg) {
     throw new Error("Generic channel not configured");
