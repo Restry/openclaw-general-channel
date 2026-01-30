@@ -18,8 +18,12 @@ export type InboundMessage = {
   chatType: "direct" | "group";
   senderId: string;
   senderName?: string;
-  messageType: "text" | "image" | "file";
+  messageType: "text" | "image" | "voice" | "audio" | "file";
   content: string;
+  // Media URL for image/voice/audio messages
+  mediaUrl?: string;
+  // MIME type for media content
+  mimeType?: string;
   timestamp: number;
   parentId?: string;
 };
@@ -29,7 +33,11 @@ export type OutboundMessage = {
   messageId: string;
   chatId: string;
   content: string;
-  contentType: "text" | "markdown";
+  contentType: "text" | "markdown" | "image" | "voice" | "audio" | "thinking";
+  // Media URL for image/voice/audio messages
+  mediaUrl?: string;
+  // MIME type for media content
+  mimeType?: string;
   replyTo?: string;
   timestamp: number;
 };
@@ -42,6 +50,10 @@ export type GenericMessageContext = {
   chatType: "direct" | "group";
   content: string;
   contentType: string;
+  // Media URL for image/voice/audio messages
+  mediaUrl?: string;
+  // MIME type for media content
+  mimeType?: string;
   parentId?: string;
 };
 
@@ -63,7 +75,10 @@ export type WSEventType =
   | "message.send"
   | "connection.open"
   | "connection.close"
-  | "typing";
+  | "typing"
+  | "thinking.start"
+  | "thinking.update"
+  | "thinking.end";
 
 export type WSEvent = {
   type: WSEventType;

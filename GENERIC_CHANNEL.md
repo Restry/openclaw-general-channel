@@ -7,6 +7,8 @@ A generic channel plugin for OpenClaw that supports WebSocket and Webhook connec
 - **Dual Connection Modes**: WebSocket and Webhook support
 - **Multi-Client Management**: Support for multiple simultaneous WebSocket connections
 - **Direct Message & Group Chat**: Handle both DM and group conversations
+- **Rich Media Support**: Send and receive images, voice messages, and audio files
+- **Thinking Indicators**: Real-time "AI is thinking" status updates
 - **Message History**: Configurable history tracking for group chats
 - **Access Control**: DM policy (open, pairing, allowlist)
 - **Auto Heartbeat**: WebSocket heartbeat for connection health monitoring
@@ -69,8 +71,10 @@ channels:
   chatType: "direct" | "group";
   senderId: string;       // Sender user ID
   senderName?: string;    // Optional sender display name
-  messageType: "text" | "image" | "file";
-  content: string;        // Message content
+  messageType: "text" | "image" | "voice" | "audio" | "file";
+  content: string;        // Message content or caption
+  mediaUrl?: string;      // Media URL (for image/voice/audio)
+  mimeType?: string;      // MIME type of media
   timestamp: number;      // Unix timestamp
   parentId?: string;      // Optional parent message ID for replies
 }
@@ -83,7 +87,9 @@ channels:
   messageId: string;      // Unique message ID
   chatId: string;         // Chat/conversation ID
   content: string;        // Message content
-  contentType: "text" | "markdown";
+  contentType: "text" | "markdown" | "image" | "voice" | "audio" | "thinking";
+  mediaUrl?: string;      // Media URL (for image/voice/audio)
+  mimeType?: string;      // MIME type of media
   replyTo?: string;       // Optional message ID being replied to
   timestamp: number;      // Unix timestamp
 }
@@ -98,6 +104,9 @@ channels:
 - `connection.open` - Connection established
 - `connection.close` - Connection closed
 - `typing` - Typing indicator (optional)
+- `thinking.start` - AI started thinking/processing
+- `thinking.update` - AI thinking status update
+- `thinking.end` - AI finished thinking
 
 ### WebSocket Event Format
 

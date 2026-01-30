@@ -7,7 +7,7 @@ import {
   type ReplyPayload,
 } from "openclaw/plugin-sdk";
 import { getGenericRuntime } from "./runtime.js";
-import { sendMessageGeneric } from "./send.js";
+import { sendMessageGeneric, sendThinkingIndicator } from "./send.js";
 import type { GenericChannelConfig } from "./types.js";
 
 export type CreateGenericReplyDispatcherParams = {
@@ -27,14 +27,25 @@ export function createGenericReplyDispatcher(params: CreateGenericReplyDispatche
     agentId,
   });
 
-  // Generic channel typing indicator (optional)
+  // Generic channel typing/thinking indicator
   const typingCallbacks = createTypingCallbacks({
     start: async () => {
-      params.runtime.log?.(`generic: typing started`);
-      // Could send typing indicator via WebSocket if needed
+      params.runtime.log?.(`generic: thinking started`);
+      // Send thinking indicator to the client
+      await sendThinkingIndicator({
+        cfg,
+        to: `chat:${chatId}`,
+        eventType: "thinking.start",
+      });
     },
     stop: async () => {
-      params.runtime.log?.(`generic: typing stopped`);
+      params.runtime.log?.(`generic: thinking stopped`);
+      // Send thinking end indicator to the client
+      await sendThinkingIndicator({
+        cfg,
+        to: `chat:${chatId}`,
+        eventType: "thinking.end",
+      });
     },
     onStartError: (err) => {
       logTypingFailure({

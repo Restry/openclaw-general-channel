@@ -47,7 +47,7 @@ export const genericPlugin: ChannelPlugin<ResolvedGenericAccount> = {
     chatTypes: ["direct", "channel"],
     polls: false,
     threads: false,
-    media: false,
+    media: true,
     reactions: false,
     edit: false,
     reply: true,

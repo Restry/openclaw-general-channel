@@ -5,7 +5,7 @@ import { setGenericRuntime } from "./src/generic/runtime.js";
 
 // Generic channel exports
 export { monitorGenericProvider } from "./src/generic/monitor.js";
-export { sendMessageGeneric } from "./src/generic/send.js";
+export { sendMessageGeneric, sendMediaGeneric, sendThinkingIndicator } from "./src/generic/send.js";
 export { probeGeneric } from "./src/generic/probe.js";
 export { genericPlugin } from "./src/generic/channel.js";
 
