@@ -1,6 +1,8 @@
 # clawd-feishu
 
-Feishu/Lark (飞书) channel plugin for [OpenClaw](https://github.com/openclaw/openclaw).
+Feishu/Lark (飞书) channel plugin for [OpenClaw](https://github.com/openclaw/openclaw) with Generic Channel support.
+
+**NEW**: Now includes a **Generic Channel** plugin that supports WebSocket and Webhook connections for H5 pages. See [Generic Channel Documentation](./GENERIC_CHANNEL.md) for details.
 
 [English](#english) | [中文](#中文)
 
@@ -116,6 +118,7 @@ channels:
 - Pairing flow for DM approval
 - User and group directory lookup
 - **Card render mode**: Optional markdown rendering with syntax highlighting
+- **Generic Channel**: WebSocket/Webhook support for H5 pages (see [Generic Channel Documentation](./GENERIC_CHANNEL.md))
 
 ### FAQ
 
@@ -156,6 +159,25 @@ openclaw plugins install ./feishu-0.1.3.tgz
 1. Ensure the app is published (at least to test version)
 2. Search for the bot name in Feishu search box
 3. Check if your account is in the app's availability scope
+
+### Generic Channel
+
+This plugin also includes a **Generic Channel** that allows H5 pages to connect directly via WebSocket or Webhook without depending on third-party platforms like Feishu or DingTalk.
+
+#### Quick Start
+
+1. Enable the Generic Channel:
+```bash
+openclaw config set channels.generic.enabled true
+openclaw config set channels.generic.connectionMode websocket
+openclaw config set channels.generic.wsPort 8080
+```
+
+2. Open `examples/h5-client.html` in your browser to test the connection
+
+3. Enter the WebSocket URL (e.g., `ws://localhost:8080/ws`), your chat ID, and name, then click "Connect"
+
+For detailed documentation, see [Generic Channel Documentation](./GENERIC_CHANNEL.md).
 
 ---
 
@@ -269,6 +291,7 @@ channels:
 - 私聊配对审批流程
 - 用户和群组目录查询
 - **卡片渲染模式**：支持语法高亮的 Markdown 渲染
+- **通用频道**：支持 H5 页面通过 WebSocket/Webhook 接入（见[通用频道文档](./GENERIC_CHANNEL.md)）
 
 ### 常见问题
 
@@ -309,6 +332,25 @@ openclaw plugins install ./feishu-0.1.3.tgz
 1. 确保应用已发布（至少发布到测试版本）
 2. 在飞书搜索框中搜索机器人名称
 3. 检查应用可用范围是否包含你的账号
+
+### 通用频道
+
+此插件还包含一个 **通用频道（Generic Channel）**，允许 H5 页面通过 WebSocket 或 Webhook 直接连接，无需依赖飞书、钉钉等第三方平台。
+
+#### 快速开始
+
+1. 启用通用频道：
+```bash
+openclaw config set channels.generic.enabled true
+openclaw config set channels.generic.connectionMode websocket
+openclaw config set channels.generic.wsPort 8080
+```
+
+2. 在浏览器中打开 `examples/h5-client.html` 测试连接
+
+3. 输入 WebSocket URL（如 `ws://localhost:8080/ws`）、聊天 ID 和名称，然后点击"连接"
+
+详细文档见[通用频道文档](./GENERIC_CHANNEL.md)。
 
 ---
 
