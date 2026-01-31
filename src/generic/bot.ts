@@ -19,6 +19,8 @@ export function parseGenericMessage(message: InboundMessage): GenericMessageCont
     chatType: message.chatType,
     content: message.content,
     contentType: message.messageType,
+    mediaUrl: message.mediaUrl,
+    mimeType: message.mimeType,
     parentId: message.parentId,
   };
 }
@@ -89,6 +91,17 @@ export async function handleGenericMessage(params: {
     // Build message body with sender name
     const speaker = ctx.senderName ?? ctx.senderId;
     let messageBody = `${speaker}: ${ctx.content}`;
+
+    // Handle media messages - include media URL in the message body for agent context
+    if (ctx.mediaUrl && (ctx.contentType === "image" || ctx.contentType === "voice" || ctx.contentType === "audio")) {
+      let mediaLabel = "🔊 Audio";
+      if (ctx.contentType === "image") {
+        mediaLabel = "🖼️ Image";
+      } else if (ctx.contentType === "voice") {
+        mediaLabel = "🎤 Voice";
+      }
+      messageBody = `${speaker}: [${mediaLabel}] ${ctx.content || "(no caption)"}\nMedia URL: ${ctx.mediaUrl}`;
+    }
 
     // Handle quoted/reply messages
     if (ctx.parentId) {

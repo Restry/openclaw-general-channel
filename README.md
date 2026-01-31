@@ -65,6 +65,8 @@ openclaw config set channels.generic.wsPort 8080
 - **Dual Connection Modes**: WebSocket and Webhook support
 - **Multi-Client Management**: Support for multiple simultaneous WebSocket connections
 - **Direct Message & Group Chat**: Handle both DM and group conversations
+- **Rich Media Support**: Send and receive images, voice messages, and audio files
+- **Thinking Indicators**: Real-time "AI is thinking" status updates
 - **Message History**: Configurable history tracking for group chats
 - **Access Control**: DM policy (open, pairing, allowlist)
 - **Auto Heartbeat**: WebSocket heartbeat for connection health monitoring
@@ -93,8 +95,10 @@ openclaw config set channels.generic.wsPort 8080
   chatType: "direct" | "group";
   senderId: string;       // Sender user ID
   senderName?: string;    // Optional sender display name
-  messageType: "text" | "image" | "file";
-  content: string;        // Message content
+  messageType: "text" | "image" | "voice" | "audio" | "file";
+  content: string;        // Message content or caption
+  mediaUrl?: string;      // Media URL (for image/voice/audio)
+  mimeType?: string;      // MIME type of media
   timestamp: number;      // Unix timestamp
   parentId?: string;      // Optional parent message ID for replies
 }
@@ -107,7 +111,9 @@ openclaw config set channels.generic.wsPort 8080
   messageId: string;      // Unique message ID
   chatId: string;         // Chat/conversation ID
   content: string;        // Message content
-  contentType: "text" | "markdown";
+  contentType: "text" | "markdown" | "image" | "voice" | "audio";
+  mediaUrl?: string;      // Media URL (for image/voice/audio)
+  mimeType?: string;      // MIME type of media
   replyTo?: string;       // Optional message ID being replied to
   timestamp: number;      // Unix timestamp
 }
@@ -122,6 +128,9 @@ openclaw config set channels.generic.wsPort 8080
 | `connection.open` | Connection established |
 | `connection.close` | Connection closed |
 | `typing` | Typing indicator (optional) |
+| `thinking.start` | AI started thinking/processing |
+| `thinking.update` | AI thinking status update |
+| `thinking.end` | AI finished thinking |
 
 ### H5 Client Example
 
@@ -232,6 +241,8 @@ openclaw config set channels.generic.wsPort 8080
 - **双连接模式**：支持 WebSocket 和 Webhook
 - **多客户端管理**：支持多个 WebSocket 连接同时在线
 - **私聊与群聊**：处理私聊和群组对话
+- **富媒体支持**：发送和接收图片、语音消息、音频文件
+- **思考指示器**：实时显示"AI 正在思考"状态
 - **消息历史**：可配置的群聊历史记录
 - **访问控制**：私聊策略（开放、配对、白名单）
 - **自动心跳**：WebSocket 心跳保活机制

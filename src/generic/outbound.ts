@@ -1,6 +1,6 @@
 import type { ChannelOutboundAdapter } from "openclaw/plugin-sdk";
 import { getGenericRuntime } from "./runtime.js";
-import { sendMessageGeneric } from "./send.js";
+import { sendMessageGeneric, sendMediaGeneric } from "./send.js";
 
 export const genericOutbound: ChannelOutboundAdapter = {
   deliveryMode: "direct",
@@ -11,8 +11,29 @@ export const genericOutbound: ChannelOutboundAdapter = {
     const result = await sendMessageGeneric({ cfg, to, text });
     return { channel: "generic-channel", ...result };
   },
-  sendMedia: async ({ cfg, to, text, mediaUrl }) => {
-    // For now, just send media URL as text since we don't have media upload implemented
+  sendMedia: async ({ cfg, to, text, mediaUrl, mediaType }) => {
+    // Determine content type from mediaType - preserve voice vs audio distinction
+    let contentType: "image" | "voice" | "audio" | undefined;
+    if (mediaType === "image") {
+      contentType = "image";
+    } else if (mediaType === "voice") {
+      contentType = "voice";
+    } else if (mediaType === "audio") {
+      contentType = "audio";
+    }
+
+    if (contentType && mediaUrl) {
+      const result = await sendMediaGeneric({
+        cfg,
+        to,
+        mediaUrl,
+        mediaType: contentType,
+        caption: text,
+      });
+      return { channel: "generic-channel", ...result };
+    }
+
+    // Fallback: send media URL as text
     let fullText = text ?? "";
     if (mediaUrl) {
       fullText = fullText ? `${fullText}\n\n📎 ${mediaUrl}` : `📎 ${mediaUrl}`;

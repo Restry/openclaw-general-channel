@@ -1,5 +1,5 @@
 import type { OpenClawConfig } from "openclaw/plugin-sdk";
-import type { GenericChannelConfig, GenericSendResult, OutboundMessage } from "./types.js";
+import type { GenericChannelConfig, GenericSendResult, OutboundMessage, WSEventType } from "./types.js";
 import { getGenericWSManager } from "./client.js";
 
 export type SendGenericMessageParams = {
@@ -7,7 +7,9 @@ export type SendGenericMessageParams = {
   to: string;
   text: string;
   replyToMessageId?: string;
-  contentType?: "text" | "markdown";
+  contentType?: "text" | "markdown" | "image" | "voice" | "audio";
+  mediaUrl?: string;
+  mimeType?: string;
 };
 
 function normalizeTarget(to: string): { chatId: string; type: "user" | "chat" } {
@@ -22,7 +24,7 @@ function normalizeTarget(to: string): { chatId: string; type: "user" | "chat" } 
 }
 
 export async function sendMessageGeneric(params: SendGenericMessageParams): Promise<GenericSendResult> {
-  const { cfg, to, text, replyToMessageId, contentType = "text" } = params;
+  const { cfg, to, text, replyToMessageId, contentType = "text", mediaUrl, mimeType } = params;
   const genericCfg = cfg.channels?.["generic-channel"] as GenericChannelConfig | undefined;
 
   if (!genericCfg) {
@@ -37,6 +39,8 @@ export async function sendMessageGeneric(params: SendGenericMessageParams): Prom
     chatId: target.chatId,
     content: text,
     contentType,
+    mediaUrl,
+    mimeType,
     replyTo: replyToMessageId,
     timestamp: Date.now(),
   };
@@ -63,4 +67,58 @@ export async function sendMessageGeneric(params: SendGenericMessageParams): Prom
     messageId,
     chatId: target.chatId,
   };
+}
+
+// Send thinking indicator to client
+export async function sendThinkingIndicator(params: {
+  cfg: OpenClawConfig;
+  to: string;
+  eventType: "thinking.start" | "thinking.update" | "thinking.end";
+  content?: string;
+}): Promise<void> {
+  const { cfg, to, eventType, content = "" } = params;
+  const genericCfg = cfg.channels?.["generic-channel"] as GenericChannelConfig | undefined;
+
+  if (!genericCfg) {
+    return;
+  }
+
+  const target = normalizeTarget(to);
+
+  if (genericCfg.connectionMode === "websocket") {
+    const wsManager = getGenericWSManager();
+    if (wsManager) {
+      wsManager.sendToClient(target.chatId, {
+        type: eventType,
+        data: {
+          chatId: target.chatId,
+          content,
+          timestamp: Date.now(),
+        },
+      });
+    }
+  }
+}
+
+// Send media message (image/voice/audio)
+export async function sendMediaGeneric(params: {
+  cfg: OpenClawConfig;
+  to: string;
+  mediaUrl: string;
+  mediaType: "image" | "voice" | "audio";
+  mimeType?: string;
+  caption?: string;
+  replyToMessageId?: string;
+}): Promise<GenericSendResult> {
+  const { cfg, to, mediaUrl, mediaType, mimeType, caption = "", replyToMessageId } = params;
+
+  return sendMessageGeneric({
+    cfg,
+    to,
+    text: caption,
+    contentType: mediaType,
+    mediaUrl,
+    mimeType,
+    replyToMessageId,
+  });
 }
