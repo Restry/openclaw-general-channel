@@ -1,5 +1,5 @@
 {
-  "name": "@restry/generic-channel",
+  "name": "@restry/openclaw-general-channel",
   "version": "2.0.0",
   "type": "module",
   "description": "Generic WebSocket/Webhook channel plugin for OpenClaw",
@@ -13,7 +13,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Restry/clawdbot-generic-channel.git"
+    "url": "git+https://github.com/Restry/openclaw-general-channel.git"
   },
   "keywords": [
     "openclaw",
@@ -26,23 +26,26 @@
   ],
   "openclaw": {
     "extensions": [
-      "./index.ts"
+      "./index.js"
     ],
     "channel": {
-      "id": "generic-channel",
+      "id": "openclaw-general-channel",
       "label": "Generic Channel",
       "selectionLabel": "Generic Channel (WebSocket/Webhook)",
-      "docsPath": "/channels/generic-channel",
-      "docsLabel": "generic-channel",
+      "docsPath": "/channels/openclaw-general-channel",
+      "docsLabel": "openclaw-general-channel",
       "blurb": "Generic WebSocket/Webhook channel for H5 pages.",
       "aliases": [],
       "order": 100
     },
     "install": {
-      "npmSpec": "@restry/generic-channel",
+      "npmSpec": "@restry/openclaw-general-channel",
       "localPath": ".",
       "defaultChoice": "npm"
     }
+  },
+  "scripts": {
+    "build": "tsc"
   },
   "dependencies": {
     "@types/ws": "^8.18.1",

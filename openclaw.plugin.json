@@ -1,6 +1,6 @@
 {
-  "id": "generic-channel",
-  "channels": ["generic-channel"],
+  "id": "openclaw-general-channel",
+  "channels": ["openclaw-general-channel"],
   "configSchema": {
     "type": "object",
     "additionalProperties": false,

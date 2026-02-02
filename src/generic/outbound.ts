@@ -9,7 +9,7 @@ export const genericOutbound: ChannelOutboundAdapter = {
   textChunkLimit: 4000,
   sendText: async ({ cfg, to, text }) => {
     const result = await sendMessageGeneric({ cfg, to, text });
-    return { channel: "generic-channel", ...result };
+    return { channel: "openclaw-general-channel", ...result };
   },
   sendMedia: async ({ cfg, to, text, mediaUrl, mediaType }) => {
     // Determine content type from mediaType - preserve voice vs audio distinction
@@ -30,7 +30,7 @@ export const genericOutbound: ChannelOutboundAdapter = {
         mediaType: contentType,
         caption: text,
       });
-      return { channel: "generic-channel", ...result };
+      return { channel: "openclaw-general-channel", ...result };
     }
 
     // Fallback: send media URL as text
@@ -40,6 +40,6 @@ export const genericOutbound: ChannelOutboundAdapter = {
     }
 
     const result = await sendMessageGeneric({ cfg, to, text: fullText });
-    return { channel: "generic-channel", ...result };
+    return { channel: "openclaw-general-channel", ...result };
   },
 };

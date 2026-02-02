@@ -50,7 +50,7 @@ export function createGenericReplyDispatcher(params: CreateGenericReplyDispatche
     onStartError: (err) => {
       logTypingFailure({
         log: (message) => params.runtime.log?.(message),
-        channel: "generic-channel",
+        channel: "openclaw-general-channel",
         action: "start",
         error: err,
       });
@@ -58,7 +58,7 @@ export function createGenericReplyDispatcher(params: CreateGenericReplyDispatche
     onStopError: (err) => {
       logTypingFailure({
         log: (message) => params.runtime.log?.(message),
-        channel: "generic-channel",
+        channel: "openclaw-general-channel",
         action: "stop",
         error: err,
       });
@@ -67,7 +67,7 @@ export function createGenericReplyDispatcher(params: CreateGenericReplyDispatche
 
   const textChunkLimit = core.channel.text.resolveTextChunkLimit({
     cfg,
-    channel: "generic-channel",
+    channel: "openclaw-general-channel",
     defaultLimit: 4000,
   });
 

@@ -18,9 +18,9 @@ export async function monitorGenericProvider(opts: MonitorGenericOpts = {}): Pro
     throw new Error("Config is required for Generic monitor");
   }
 
-  const genericCfg = cfg.channels?.["generic-channel"] as GenericChannelConfig | undefined;
+  const genericCfg = cfg.channels?.["openclaw-general-channel"] as GenericChannelConfig | undefined;
   if (!genericCfg?.enabled) {
-    throw new Error("Generic channel not enabled");
+    throw new Error("OpenClaw General Channel not enabled");
   }
 
   const log = opts.runtime?.log ?? console.log;

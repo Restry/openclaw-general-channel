@@ -6,11 +6,11 @@ import { probeGeneric } from "./probe.js";
 import { sendMessageGeneric } from "./send.js";
 
 const meta = {
-  id: "generic-channel",
-  label: "Generic Channel",
-  selectionLabel: "Generic Channel (WebSocket/Webhook)",
-  docsPath: "/channels/generic-channel",
-  docsLabel: "generic-channel",
+  id: "openclaw-general-channel",
+  label: "OpenClaw General Channel",
+  selectionLabel: "OpenClaw General Channel (WebSocket/Webhook)",
+  docsPath: "/channels/openclaw-general-channel",
+  docsLabel: "openclaw-general-channel",
   blurb: "Generic channel supporting WebSocket and Webhook connections.",
   aliases: [],
   order: 100,
@@ -18,7 +18,7 @@ const meta = {
 
 function resolveGenericAccount(params: { cfg: OpenClawConfig }): ResolvedGenericAccount {
   const { cfg } = params;
-  const genericCfg = cfg.channels?.["generic-channel"] as GenericChannelConfig | undefined;
+  const genericCfg = cfg.channels?.["openclaw-general-channel"] as GenericChannelConfig | undefined;
 
   return {
     accountId: DEFAULT_ACCOUNT_ID,
@@ -28,7 +28,7 @@ function resolveGenericAccount(params: { cfg: OpenClawConfig }): ResolvedGeneric
 }
 
 export const genericPlugin: ChannelPlugin<ResolvedGenericAccount> = {
-  id: "generic-channel",
+  id: "openclaw-general-channel",
   meta: {
     ...meta,
   },
@@ -42,6 +42,57 @@ export const genericPlugin: ChannelPlugin<ResolvedGenericAccount> = {
         text: PAIRING_APPROVED_MESSAGE,
       });
     },
+  },
+  onboarding: {
+    questions: [
+      {
+        id: "connectionMode",
+        type: "select",
+        label: "Connection Mode",
+        options: [
+          { value: "websocket", label: "WebSocket (Recommended)" },
+          { value: "webhook", label: "Webhook" },
+        ],
+        defaultValue: "websocket",
+        required: true,
+      },
+      {
+        id: "wsPort",
+        type: "number",
+        label: "WebSocket Port",
+        defaultValue: 8080,
+        required: true,
+        when: (answers) => answers.connectionMode === "websocket",
+      },
+      {
+        id: "webhookPort",
+        type: "number",
+        label: "Webhook Port",
+        defaultValue: 3000,
+        required: true,
+        when: (answers) => answers.connectionMode === "webhook",
+      },
+      {
+        id: "enabled",
+        type: "confirm",
+        label: "Enable this channel now?",
+        defaultValue: true,
+      },
+    ],
+    applyAnswers: ({ cfg, answers }) => ({
+      ...cfg,
+      channels: {
+        ...cfg.channels,
+        "openclaw-general-channel": {
+          enabled: answers.enabled,
+          connectionMode: answers.connectionMode,
+          wsPort: answers.wsPort,
+          webhookPort: answers.webhookPort,
+          wsPath: "/ws",
+          webhookPath: "/webhook",
+        },
+      },
+    }),
   },
   capabilities: {
     chatTypes: ["direct", "channel"],
@@ -57,7 +108,7 @@ export const genericPlugin: ChannelPlugin<ResolvedGenericAccount> = {
       "- Generic targeting: omit `target` to reply to the current conversation (auto-inferred). Explicit targets: `user:userId` or `chat:chatId`.",
     ],
   },
-  reload: { configPrefixes: ["channels.generic-channel"] },
+  reload: { configPrefixes: ["channels.openclaw-general-channel"] },
   configSchema: {
     schema: {
       type: "object",
@@ -85,8 +136,8 @@ export const genericPlugin: ChannelPlugin<ResolvedGenericAccount> = {
       ...cfg,
       channels: {
         ...cfg.channels,
-        "generic-channel": {
-          ...cfg.channels?.["generic-channel"],
+        "openclaw-general-channel": {
+          ...cfg.channels?.["openclaw-general-channel"],
           enabled,
         },
       },
@@ -94,7 +145,7 @@ export const genericPlugin: ChannelPlugin<ResolvedGenericAccount> = {
     deleteAccount: ({ cfg }) => {
       const next = { ...cfg } as OpenClawConfig;
       const nextChannels = { ...cfg.channels };
-      delete (nextChannels as Record<string, unknown>)["generic-channel"];
+      delete (nextChannels as Record<string, unknown>)["openclaw-general-channel"];
       if (Object.keys(nextChannels).length > 0) {
         next.channels = nextChannels;
       } else {
@@ -103,7 +154,7 @@ export const genericPlugin: ChannelPlugin<ResolvedGenericAccount> = {
       return next;
     },
     isConfigured: (_account, cfg) => {
-      const genericCfg = cfg.channels?.["generic-channel"] as GenericChannelConfig | undefined;
+      const genericCfg = cfg.channels?.["openclaw-general-channel"] as GenericChannelConfig | undefined;
       return Boolean(genericCfg?.enabled);
     },
     describeAccount: (account) => ({
@@ -112,7 +163,7 @@ export const genericPlugin: ChannelPlugin<ResolvedGenericAccount> = {
       configured: account.configured,
     }),
     resolveAllowFrom: ({ cfg }) =>
-      (cfg.channels?.["generic-channel"] as GenericChannelConfig | undefined)?.allowFrom ?? [],
+      (cfg.channels?.["openclaw-general-channel"] as GenericChannelConfig | undefined)?.allowFrom ?? [],
     formatAllowFrom: ({ allowFrom }) =>
       allowFrom
         .map((entry) => String(entry).trim())
@@ -130,8 +181,8 @@ export const genericPlugin: ChannelPlugin<ResolvedGenericAccount> = {
       ...cfg,
       channels: {
         ...cfg.channels,
-        "generic-channel": {
-          ...cfg.channels?.["generic-channel"],
+        "openclaw-general-channel": {
+          ...cfg.channels?.["openclaw-general-channel"],
           enabled: true,
         },
       },
@@ -160,6 +211,12 @@ export const genericPlugin: ChannelPlugin<ResolvedGenericAccount> = {
   },
   outbound: genericOutbound,
   status: {
+    getStatus: ({ accountId }) => ({
+      accountId,
+      running: false,
+      configured: true,
+      lastError: null,
+    }),
     defaultRuntime: {
       accountId: DEFAULT_ACCOUNT_ID,
       running: false,
@@ -179,7 +236,7 @@ export const genericPlugin: ChannelPlugin<ResolvedGenericAccount> = {
       lastProbeAt: snapshot.lastProbeAt ?? null,
     }),
     probeAccount: async ({ cfg }) =>
-      await probeGeneric(cfg.channels?.["generic-channel"] as GenericChannelConfig | undefined),
+      await probeGeneric(cfg.channels?.["openclaw-general-channel"] as GenericChannelConfig | undefined),
     buildAccountSnapshot: ({ account, runtime, probe }) => ({
       accountId: account.accountId,
       enabled: account.enabled,
@@ -195,7 +252,7 @@ export const genericPlugin: ChannelPlugin<ResolvedGenericAccount> = {
   gateway: {
     startAccount: async (ctx) => {
       const { monitorGenericProvider } = await import("./monitor.js");
-      const genericCfg = ctx.cfg.channels?.["generic-channel"] as GenericChannelConfig | undefined;
+      const genericCfg = ctx.cfg.channels?.["openclaw-general-channel"] as GenericChannelConfig | undefined;
       const port = genericCfg?.connectionMode === "websocket" 
         ? genericCfg?.wsPort ?? 8080 
         : genericCfg?.webhookPort ?? 3000;

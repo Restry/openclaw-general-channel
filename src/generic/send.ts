@@ -25,10 +25,10 @@ function normalizeTarget(to: string): { chatId: string; type: "user" | "chat" } 
 
 export async function sendMessageGeneric(params: SendGenericMessageParams): Promise<GenericSendResult> {
   const { cfg, to, text, replyToMessageId, contentType = "text", mediaUrl, mimeType } = params;
-  const genericCfg = cfg.channels?.["generic-channel"] as GenericChannelConfig | undefined;
+  const genericCfg = cfg.channels?.["openclaw-general-channel"] as GenericChannelConfig | undefined;
 
   if (!genericCfg) {
-    throw new Error("Generic channel not configured");
+    throw new Error("OpenClaw General Channel not configured");
   }
 
   const target = normalizeTarget(to);
@@ -77,7 +77,7 @@ export async function sendThinkingIndicator(params: {
   content?: string;
 }): Promise<void> {
   const { cfg, to, eventType, content = "" } = params;
-  const genericCfg = cfg.channels?.["generic-channel"] as GenericChannelConfig | undefined;
+  const genericCfg = cfg.channels?.["openclaw-general-channel"] as GenericChannelConfig | undefined;
 
   if (!genericCfg) {
     return;
