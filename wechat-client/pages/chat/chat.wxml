@@ -1,0 +1,36 @@
+<view class="container">
+  <scroll-view class="chat-list" scroll-y scroll-into-view="{{toView}}" scroll-with-animation>
+    <block wx:for="{{messages}}" wx:key="index">
+      <view class="message-item {{item.isMe ? 'my-message' : 'other-message'}}" id="msg-{{index}}">
+        <view class="bubble" bindtap="playAudio" data-audio="{{item.audioUrl}}">
+          
+          <block wx:if="{{item.imageUrl}}">
+            <image src="{{item.imageUrl}}" mode="widthFix" class="chat-image" catchtap="previewImage" data-src="{{item.imageUrl}}"></image>
+          </block>
+          <block wx:else>
+             <text>{{item.text}}</text>
+             <view wx:if="{{item.audioUrl}}" class="audio-icon">🔊</view>
+          </block>
+
+        </view>
+      </view>
+    </block>
+
+    <view wx:if="{{isTyping}}" class="message-item other-message" id="msg-typing">
+        <view class="bubble typing-bubble">
+            <view class="dot"></view>
+            <view class="dot"></view>
+            <view class="dot"></view>
+        </view>
+    </view>
+
+    <view id="scroll-bottom"></view>
+  </scroll-view>
+
+  <view class="input-area">
+    <button class="voice-btn {{isRecording ? 'recording' : ''}}" bindtouchstart="startRecording" bindtouchend="stopRecording">🎤</button>
+    <button class="plus-btn" bindtap="chooseImage">➕</button>
+    <input class="input-box" placeholder="Type a message..." bindinput="onInput" value="{{inputValue}}" confirm-type="send" bindconfirm="sendMessage"/>
+    <button class="send-btn" bindtap="sendMessage" size="mini">Send</button>
+  </view>
+</view>

@@ -1,0 +1,165 @@
+/* pages/chat/chat.wxss */
+page {
+  height: 100vh;
+  background-color: #f2f2f2;
+  display: flex;
+  flex-direction: column;
+}
+
+.container {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+}
+
+.chat-list {
+  flex: 1;
+  padding: 20rpx;
+  box-sizing: border-box;
+  overflow-y: auto;
+}
+
+.message-item {
+  display: flex;
+  margin-bottom: 20rpx;
+  width: 100%;
+}
+
+.my-message {
+  justify-content: flex-end;
+}
+
+.other-message {
+  justify-content: flex-start;
+}
+
+.bubble {
+  max-width: 70%;
+  padding: 20rpx;
+  border-radius: 10rpx;
+  font-size: 32rpx;
+  line-height: 1.4;
+  word-wrap: break-word;
+}
+
+.my-message .bubble {
+  background-color: #95ec69; /* WeChat green */
+  color: #000;
+}
+
+.other-message .bubble {
+  background-color: #ffffff;
+  color: #000;
+}
+
+.chat-image {
+  max-width: 100%;
+  border-radius: 10rpx;
+  display: block; /* Removes bottom spacing */
+}
+
+.input-area {
+  height: 100rpx;
+  background-color: #f7f7f7;
+  border-top: 1rpx solid #e5e5e5;
+  display: flex;
+  align-items: center;
+  padding: 10rpx 20rpx;
+  box-sizing: border-box;
+}
+
+.voice-btn {
+  background-color: #f0f0f0;
+  color: #333;
+  font-size: 40rpx;
+  width: 70rpx;
+  height: 70rpx;
+  line-height: 70rpx;
+  padding: 0;
+  margin-right: 15rpx;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.plus-btn {
+  background-color: #f0f0f0;
+  color: #333;
+  font-size: 40rpx;
+  width: 70rpx;
+  height: 70rpx;
+  line-height: 70rpx;
+  padding: 0;
+  margin-right: 15rpx;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.voice-btn:active, .voice-btn.recording {
+    background-color: #ff5252; /* Red when recording */
+    color: #fff;
+}
+
+.audio-icon {
+  margin-left: 10rpx;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.input-box {
+  flex: 1;
+  background-color: #fff;
+  height: 70rpx;
+  border-radius: 10rpx;
+  padding: 0 20rpx;
+  margin-right: 20rpx;
+  font-size: 32rpx;
+}
+
+.send-btn {
+  background-color: #07c160;
+  color: #fff;
+  font-size: 28rpx;
+  padding: 0 30rpx;
+  height: 70rpx;
+  line-height: 70rpx;
+  border-radius: 10rpx;
+}
+
+/* Typing Indicator Styles */
+.typing-bubble {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20rpx 30rpx; /* Slightly wider */
+}
+
+.dot {
+    width: 12rpx;
+    height: 12rpx;
+    margin: 0 5rpx;
+    background-color: #aaa;
+    border-radius: 50%;
+    animation: bounce 1.4s infinite ease-in-out both;
+}
+
+.dot:nth-child(1) {
+    animation-delay: -0.32s;
+}
+
+.dot:nth-child(2) {
+    animation-delay: -0.16s;
+}
+
+@keyframes bounce {
+    0%, 80%, 100% {
+        transform: scale(0);
+    }
+    40% {
+        transform: scale(1);
+    }
+}
